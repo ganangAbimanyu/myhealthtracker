@@ -1,0 +1,110 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1, h2, h3 {
+    color: #555;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Top Navigation Bar */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn {
+    color: #d9534f;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    text-decoration: underline;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    max-width: 800px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.dashboard-header {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #0056a5;
+}
+
+.dashboard-subheader {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Cards Section */
+.dashboard-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Blue Card (Check Nutrition) */
+.blue-card {
+    background-color: #0056a5;
+    color: #fff;
+}
+
+.blue-card:hover {
+    background-color: #004080;
+}
+
+/* Yellow Card (Add Record and View Record) */
+.yellow-card {
+    background-color: #f1c232;
+    color: #000;
+}
+
+.yellow-card:hover {
+    background-color: #d4a917;
+}
+
+.card-image {
+    max-width: 80px;
+    max-height: 80px;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+}

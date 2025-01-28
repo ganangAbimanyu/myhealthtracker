@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Location - MyHealthTracker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS (for OpenStreetMap) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #ffffff, #ffffff);
+            color: #fff;
+            padding-top: 20px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            margin: 20px auto;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .btn-primary {
+            border-radius: 20px;
+        }
+        .btn-secondary {
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+        h1 {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>View My GPS Location</h1>
+        <!-- Button to show location -->
+        <button id="getLocationBtn" class="btn btn-primary mt-3 mb-4">Show My Location</button>
+        <!-- Map container -->
+        <div id="map" style="display: none;"></div>
+        <!-- Back to Dashboard button -->
+        <a href="dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
+    <!-- Leaflet JS (for OpenStreetMap) -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const mapElement = document.getElementById("map");
+        const locationBtn = document.getElementById("getLocationBtn");
+        let map;
+
+        // Initialize the map
+        function initializeMap(lat, lng) {
+            if (!map) {
+                map = L.map("map").setView([lat, lng], 13);
+                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+                L.marker([lat, lng]).addTo(map).bindPopup("You are here!").openPopup();
+            } else {
+                map.setView([lat, lng], 13);
+                L.marker([lat, lng]).addTo(map).bindPopup("You are here!").openPopup();
+            }
+        }
+
+        // Get GPS location
+        locationBtn.addEventListener("click", () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        initializeMap(lat, lng);
+                        mapElement.style.display = "block";
+                    },
+                    (error) => {
+                        alert("Unable to retrieve your location. Please check your GPS settings.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

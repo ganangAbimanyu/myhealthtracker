@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Info - MyHealthTracker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .nutrition-container {
+            margin-top: 50px;
+            max-width: 700px;
+        }
+        .nutrition-item {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        /* Custom Yellow Button */
+        .btn-yellow {
+            background-color: #f1c232; /* Yellow background */
+            color: #000; /* Black text */
+            border: none;
+        }
+        .btn-yellow:hover {
+            background-color: #d4a917; /* Darker yellow */
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nutrition-container mx-auto">
+            <h1 class="text-center mb-4">Nutrition Info</h1>
+            <form id="nutritionixForm" class="mb-4">
+                <div class="form-group">
+                    <label for="foodInput">Enter Food (e.g., 1 apple):</label>
+                    <input type="text" id="foodInput" name="food" class="form-control" placeholder="e.g., 1 apple" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Search</button>
+            </form>
+
+            <h2>Results:</h2>
+            <div id="nutritionResults">
+                <p>No results yet. Please search for something above.</p>
+            </div>
+
+            <!-- Yellow Back to Dashboard Button -->
+            <a href="dashboard.php" class="btn btn-yellow btn-block mt-4">Back to Dashboard</a>
+            <!-- Save to Database Button -->
+            <button id="saveButton" class="btn btn-success btn-block mt-3" >Save to Database</button>
+        </div>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+         document.getElementById("nutritionixForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const foodInput = document.getElementById("foodInput").value;
+
+        if (!foodInput.trim()) {
+            Swal.fire({
+                icon: "error",
+                title: "Input Required",
+                text: "Please enter a food item to search for nutrition information."
+            });
+            return;
+        }
+
+        // Send the food query to nutritionix.php
+        $.post("nutritionix.php", { food: foodInput })
+            .done(function (response) {
+                const resultsDiv = document.getElementById("nutritionResults");
+                resultsDiv.innerHTML = ""; // Clear previous results
+
+                const saveButton = document.getElementById("saveButton");
+                saveButton.style.display = "none";
+
+                const data = JSON.parse(response);
+                if (data.foods && data.foods.length > 0) {
+                    data.foods.forEach(food => {
+                        resultsDiv.innerHTML += `
+                            <div class="nutrition-item">
+                                <img src="${food.photo.thumb}" alt="${food.food_name}" class="img-fluid mb-2">
+                                <h3>${food.food_name}</h3>
+                                <p><strong>Calories:</strong> ${food.nf_calories} kcal</p>
+                                <p><strong>Protein:</strong> ${food.nf_protein} g</p>
+                                <p><strong>Carbohydrates:</strong> ${food.nf_total_carbohydrate} g</p>
+                                <p><strong>Fat:</strong> ${food.nf_total_fat} g</p>
+                            </div>
+                        `;
+
+                        // Attach data to save button
+                        saveButton.dataset.foodName = food.food_name;
+                        saveButton.dataset.calories = food.nf_calories;
+                        saveButton.dataset.protein = food.nf_protein;
+                        saveButton.dataset.carbs = food.nf_total_carbohydrate;
+                        saveButton.dataset.fat = food.nf_total_fat;
+                        saveButton.dataset.imageUrl = food.photo.thumb; // Add image URL
+                    });
+                    saveButton.style.display = "block";
+                    console.log(data);
+                } else {
+                    resultsDiv.innerHTML = '<p>No results found for "${foodInput}". Please try again.</p>';
+                }
+            })
+            .fail(function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred while fetching nutrition data. Please try again later."
+                });
+            });
+    });
+
+    // Save to Database Button Handler
+    document.getElementById("saveButton").addEventListener("click", function () {
+        const foodData = {
+            food_name: this.dataset.foodName,
+            calories: this.dataset.calories,
+            protein: this.dataset.protein,
+            carbs: this.dataset.carbs,
+            fat: this.dataset.fat,
+            image_url: this.dataset.imageUrl
+        };
+
+        // Send data to save.php
+        $.post("save.php", foodData)
+            .done(function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Saved!",
+                    text: "The nutrition data has been saved successfully."
+                });
+            })
+            .fail(function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to save the data. Please try again."
+                });
+            });
+    });
+    </script>
+</body>
+</html>
