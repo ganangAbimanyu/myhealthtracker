@@ -1,0 +1,11 @@
+{
+  "name": "final_project",
+  "version": "1.0.0",
+  "description": "health tracker using nutrionix api",
+  "main": "scripts.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "abimg",
+  "license": "ISC"
+}
